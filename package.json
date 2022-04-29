@@ -1,0 +1,22 @@
+{
+  "name": "upon-arrival",
+  "version": "0.0.1",
+  "description": "Call void functions and set values on promises, to be executed when the promise is resolved",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc --project tsconfig.build.json",
+    "test": "jest"
+  },
+  "files": [
+    "dist"
+  ],
+  "author": "Zach Gotsch",
+  "license": "ISC",
+  "dependencies": {
+    "@types/jest": "^27.4.1",
+    "jest": "^27.5.1",
+    "ts-jest": "^27.1.4",
+    "typescript": "^4.6.3"
+  }
+}
