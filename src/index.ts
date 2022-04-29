@@ -33,7 +33,7 @@ type Arrival<T> = {
 
 const UNRESOLVED: unique symbol = Symbol();
 
-export default function arrival<T extends Record<PropertyKey, unknown>>(
+export default function uponArrival<T extends Record<PropertyKey, unknown>>(
   promise: Promise<T>
 ): Arrival<T> {
   if (typeof promise.then !== "function") {
