@@ -1,4 +1,4 @@
-import uponArrival, {ArrivalError} from "./index";
+import uponArrival, {ArrivalError, PROMISE} from "./index";
 
 function flushPromises() {
   return new Promise((resolve) => setImmediate(resolve));
@@ -56,13 +56,14 @@ describe("uponArrival", () => {
       },
     };
 
+    // it makes all returns undefined
     const arrival = uponArrival(Promise.resolve(inner));
     expect(arrival.foo()).toBe(undefined);
     // @ts-expect-error
     expect(arrival.bar()).toBe(undefined);
     expect(arrival.bar(7)).toBe(undefined);
     // @ts-expect-error
-    expect(arrival.unknownMethod()).toBe(undefined);
+    arrival.unknownMethod;
   });
 
   it("converts non-void functions to void functions", () => {
@@ -166,30 +167,49 @@ describe("uponArrival", () => {
     expect(baz).toHaveBeenCalledTimes(1);
   });
 
-  it("rejects unhandled if the inner promise is rejected", async () => {
-    // @ts-ignore
-    const actualProcess = process.actual();
-    const oldListeners = actualProcess.listeners("unhandledRejection");
-    actualProcess.removeAllListeners("unhandledRejection");
+  describe("catching errors", () => {
+    it("exposes a promise with the PROMISE export", () => {
+      const arrival = uponArrival(Promise.resolve({}));
+      expect(arrival[PROMISE]).toBeInstanceOf(Promise);
+    });
 
-    const unhandledRejectionHandler = jest.fn();
-    actualProcess.once("unhandledRejection", unhandledRejectionHandler);
+    it("will reject if the inner promise is rejected", async () => {
+      const arrival = uponArrival(Promise.reject(new Error("hello")));
+      try {
+        await arrival[PROMISE];
+        expect("should have thrown").toBe(false);
+      } catch (e: any) {
+        expect(e).toBeInstanceOf(ArrivalError);
+        expect(e.message).toBe("Inner promise rejected");
+        // inner rejected value is available as cause
+        expect(e.cause).toBeInstanceOf(Error);
+        expect(e.cause.message).toBe("hello");
+      }
+    });
 
-    const error = new Error("hello");
-    uponArrival(Promise.reject(error));
+    it("will reject if any of the method invocations throws during drain", async () => {
+      const foo = jest.fn(() => {
+        throw new Error("inner error");
+      });
 
-    await flushPromises();
+      const arrival = uponArrival(Promise.resolve({foo}));
+      arrival.foo();
+      // @ts-expect-error
+      arrival.unknownMethod();
 
-    expect(unhandledRejectionHandler).toHaveBeenCalledTimes(1);
-    expect(unhandledRejectionHandler.mock.calls[0][0]).toBeInstanceOf(
-      ArrivalError
-    );
-    expect(unhandledRejectionHandler.mock.calls[0][0].message).toBe(
-      "Inner promise rejected"
-    );
-
-    for (const listener of oldListeners) {
-      actualProcess.on("unhandledRejection", listener);
-    }
+      try {
+        await arrival[PROMISE];
+        expect("should have thrown").toBe(false);
+      } catch (e: any) {
+        expect(e).toBeInstanceOf(ArrivalError);
+        expect(e.message).toMatch("Rejected method invocations during drain");
+        expect(e.errors).toMatchInlineSnapshot(`
+Array [
+  [Error: inner error],
+  [Error: No such method unknownMethod],
+]
+`);
+      }
+    });
   });
 });
