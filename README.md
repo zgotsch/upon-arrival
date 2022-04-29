@@ -28,8 +28,8 @@ const arrival = uponArrival(getCallable());
 // I can call arrival.doBar(), even though the promise isn't resolved yet
 arrival.doBar();
 
-// I can call foo(), but it won't necessarily return anything, so typescript will complain if I
-// try to use that value
+// I can call foo(), but it won't necessarily return anything, so typescript will
+// complain if I try to use that value
 // @ts-expect-error
 const foo: string = arrival.foo();
 
@@ -51,13 +51,13 @@ promise.catch(err => console.error(err.message));
 // I can cause an error by calling a method that throws
 arrival.methodThatThrows();
 
-// I can also cause an error by calling a method that doesn't exist, but Typescript will prevent
-// this if it knows the method doesn't exist
+// I can also cause an error by calling a method that doesn't exist, but
+// Typescript will prevent this if it knows the method doesn't exist
 // @ts-expect-error
 arrival.methodThatDoesNotExist();
 
-// when the promise resolves, both of these errors will be returned in the `errors` property of a
-// single `ArrivalError`
+// when the promise resolves, both of these errors will be returned in the
+// `errors` property of a single `ArrivalError`
 ```
 
 ## API
