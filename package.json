@@ -1,7 +1,15 @@
 {
   "name": "upon-arrival",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Call void functions and set values on promises, to be executed when the promise is resolved",
+  "keywords": [
+    "promise",
+    "synchronous"
+  ],
+  "repository": "github:zgotsch/upon-arrival",
+  "bugs": {
+    "url": "https://github.com/zgotsch/upon-arrival/issues"
+  },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {

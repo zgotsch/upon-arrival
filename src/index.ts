@@ -23,7 +23,7 @@ export class ArrivalError extends Error {
 
 export const PROMISE: unique symbol = Symbol("PROMISE");
 
-type Arrival<T> = {
+export type Arrival<T> = {
   [K in keyof T as T[K] extends (...args: infer A) => void
     ? K
     : never]: T[K] extends (...args: infer A) => void
