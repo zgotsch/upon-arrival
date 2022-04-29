@@ -62,7 +62,7 @@ arrival.methodThatDoesNotExist();
 
 ## API
 
-- `function uponArrival<T extends Record<PropertyKey, unknown>>(promise: Promise<T>): Arrival<T>` (default export): Create an `Arrival` object from a promise. An arrival object has all the same methods as the object returned by the promise, but they are all `void`, since they cannot return anything if the promise hasn't been resolved yet. TODO: actually no reason to not return a promise that resolves with the value, once the inner promise is resolved.
+- `function uponArrival<T>(promise: Promise<T>): Arrival<T>` (default export): Create an `Arrival` object from a promise. An arrival object has all the same methods as the object returned by the promise, but they are all `void`, since they cannot return anything if the promise hasn't been resolved yet. TODO: actually no reason to not return a promise that resolves with the value, once the inner promise is resolved.
 - `PROMISE`: A symbol that can be used to access the promise for error-handling.
 - `ArrivalError`: a subclass of `Error` that is thrown when an error occurs while resolving the promise. It may have a `cause` or `errors` property which reference the cause of the error.
 

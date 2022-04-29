@@ -1,6 +1,6 @@
 {
   "name": "upon-arrival",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Call void functions and set values on promises, to be executed when the promise is resolved",
   "keywords": [
     "promise",
@@ -14,7 +14,8 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc --project tsconfig.build.json",
-    "test": "jest"
+    "test": "jest",
+    "do_publish": "npm run test && npm run build && npm publish"
   },
   "files": [
     "dist"

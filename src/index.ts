@@ -33,7 +33,7 @@ export type Arrival<T> = {
 
 const UNRESOLVED: unique symbol = Symbol();
 
-export default function uponArrival<T extends Record<PropertyKey, unknown>>(
+export default function uponArrival<T extends object>(
   promise: Promise<T>
 ): Arrival<T> {
   if (typeof promise.then !== "function") {
@@ -52,7 +52,9 @@ export default function uponArrival<T extends Record<PropertyKey, unknown>>(
     while (queue.length > 0) {
       const invocation = queue.shift()!;
       try {
-        const target: (...args: any) => void = resolved[invocation.key] as any;
+        const target: (...args: any) => void = (resolved as any)[
+          invocation.key
+        ] as any;
         if (target === undefined) {
           throw new Error(`No such method ${String(invocation.key)}`);
         }
@@ -111,7 +113,7 @@ export default function uponArrival<T extends Record<PropertyKey, unknown>>(
         return wrapped;
       }
       if (resolved !== UNRESOLVED) {
-        return resolved[key];
+        return (resolved as any)[key];
       }
       return (...args: Array<unknown>) => {
         queue.push({key, args, stack: stackTrace(2)});

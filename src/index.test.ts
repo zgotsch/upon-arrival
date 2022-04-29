@@ -48,6 +48,17 @@ describe("uponArrival", () => {
     uponArrival(Promise.resolve({}));
   });
 
+  it("wraps a promise of a class", () => {
+    class Foo {
+      bar?: string;
+      foo(): number {
+        return 42;
+      }
+    }
+
+    const arrival = uponArrival(Promise.resolve(new Foo()));
+  });
+
   it("allows calls to functions on an arrival", () => {
     const inner = {
       foo() {},
